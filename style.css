@@ -1,0 +1,496 @@
+/* ==================== VARIÁVEIS DE DESIGN (UI) ==================== */
+:root {
+    --bg-color: #fcece1; /* Fundo bege da imagem */
+    --card-bg: #111111;  /* Preto da logo */
+    --text-light: #ffffff;
+    --cyan: #00e5ff;
+    --magenta: #d500f9;
+    --purple: #6200ea;
+    --gray: #333333;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: var(--font-main);
+    color: var(--card-bg);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Container principal simulando tela de celular */
+#app-container {
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 80px; /* Espaço para o menu inferior */
+}
+
+/* ==================== HEADER E TABELA DE PONTOS ==================== */
+header {
+    background-color: var(--card-bg);
+    color: var(--text-light);
+    padding: 15px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.logo-icon {
+    font-size: 24px;
+    color: var(--cyan);
+    font-weight: bold;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--magenta), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-sub {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-top: -5px;
+}
+
+/* Tabela de Pontos */
+.score-table {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--gray);
+    padding: 10px 15px;
+    border-radius: 12px;
+    width: 100%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.score-table:active {
+    transform: scale(0.98);
+}
+
+.score-title {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.score-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--cyan);
+}
+
+.score-details {
+    display: none;
+    width: 100%;
+    background-color: var(--card-bg);
+    border: 1px solid var(--gray);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.score-details.active {
+    display: block;
+}
+
+.score-details ul {
+    list-style: none;
+}
+
+.score-details li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--gray);
+}
+
+/* ==================== CONTEÚDO PRINCIPAL ==================== */
+main {
+    padding: 20px;
+    flex: 1;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--card-bg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+h2::before {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 22px;
+    background: linear-gradient(to bottom, var(--magenta), var(--cyan));
+    border-radius: 5px;
+}
+
+/* Botões */
+.btn {
+    background-color: var(--card-bg);
+    color: var(--text-light);
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+    margin-bottom: 10px;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--magenta), var(--purple));
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--card-bg);
+    color: var(--card-bg);
+}
+
+.btn-cyan {
+    background-color: var(--cyan);
+    color: var(--card-bg);
+}
+
+/* Upload de Imagem */
+.upload-area {
+    background-color: white;
+    border: 2px dashed var(--magenta);
+    border-radius: 15px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-area p {
+    color: #888;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.preview-img {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: none;
+}
+
+/* Sketchbook Grid */
+.sketchbook-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.sketch-item {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.sketch-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.sketch-item .score-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: var(--card-bg);
+    color: var(--cyan);
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+/* Críticas */
+.critique-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.critique-box {
+    flex: 1;
+    height: 120px;
+    background: white;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.critique-box input[type="file"] {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0;
+}
+
+.critique-box span {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    padding: 5px;
+}
+
+.critique-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.no-ref-btn {
+    background-color: #eee;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.no-ref-btn.active {
+    background-color: var(--cyan);
+    border-color: var(--cyan);
+    color: var(--card-bg);
+}
+
+.critique-result {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.critique-result h3 {
+    color: var(--magenta);
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.critique-result p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.critique-result .highlight {
+    color: var(--purple);
+    font-weight: bold;
+}
+
+/* Desafios Diários */
+.challenge-card {
+    background: var(--card-bg);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.challenge-card h3 {
+    color: var(--cyan);
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.challenge-card p {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.challenge-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.challenge-actions .btn {
+    margin-bottom: 0;
+}
+
+.timer {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--magenta);
+    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Mini Games (Sorteio) */
+.slots-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.slot {
+    background: white;
+    border: 2px solid var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--card-bg);
+    min-height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot span {
+    color: var(--magenta);
+}
+
+/* ==================== MENU INFERIOR (UX) ==================== */
+nav.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--card-bg);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #888;
+    font-size: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 33%;
+}
+
+.nav-item.active {
+    color: var(--cyan);
+}
+
+.nav-item .icon {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+/* Esconder inputs de arquivo padrão */
+input[type="file"] {
+    display: none;
+}
+
+/* Loading spinner */
+.loader {
+    display: none;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--magenta);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

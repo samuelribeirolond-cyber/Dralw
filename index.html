@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Drawl - Continue Praticando</title>
+    <!-- Aqui conectamos o CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app-container">
+    
+    <!-- HEADER COM LOGO E PONTOS -->
+    <header>
+        <div class="logo-area">
+            <div class="logo-icon">✕</div>
+            <div class="logo-text">DRAWL</div>
+        </div>
+        <div class="logo-sub">CONTINUE PRATICANDO</div>
+        
+        <!-- Tabela de Pontos -->
+        <div class="score-table" id="scoreTable" onclick="toggleScoreDetails()">
+            <span class="score-title">Pontos Totais</span>
+            <span class="score-value" id="totalScore">0</span>
+        </div>
+        
+        <!-- Detalhes dos Pontos (Escondido por padrão) -->
+        <div class="score-details" id="scoreDetails">
+            <ul id="monthlyScores">
+                <li><span>Jan/2026</span> <span>+15 pts</span></li>
+                <li><span>Fev/2026</span> <span>-2 pts</span></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- ==================== TELA 1: SKETCHBOOK ==================== -->
+        <div id="screen-sketchbook" class="screen active">
+            <h2>Sketchbook</h2>
+            
+            <label class="upload-area" for="sketchUpload">
+                <div style="font-size: 30px;">📸</div>
+                <p>Toque para importar ou tirar foto</p>
+                <input type="file" id="sketchUpload" accept="image/*" capture="environment" onchange="handleSketchUpload(event)">
+            </label>
+            
+            <div class="sketchbook-grid" id="sketchGrid">
+                <div style="grid-column: span 2; text-align: center; color: #888; font-size: 14px; padding: 20px;">
+                    Nenhum desenho salvo ainda.
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TELA 2: CRÍTICAS ==================== -->
+        <div id="screen-critique" class="screen">
+            <h2>Críticas</h2>
+            
+            <div class="critique-container">
+                <div class="critique-box" id="refBox">
+                    <span>📷<br>Referência</span>
+                    <input type="file" id="refUpload" accept="image/*" onchange="handleRefUpload(event)">
+                    <img id="refPreview" src="" alt="Referência">
+                </div>
+                <div class="critique-box" id="drawBox">
+                    <span>✏️<br>Seu Desenho</span>
+                    <input type="file" id="drawUpload" accept="image/*" onchange="handleDrawUpload(event)">
+                    <img id="drawPreview" src="" alt="Desenho">
+                </div>
+            </div>
+
+            <div class="no-ref-btn" id="noRefBtn" onclick="toggleNoRef()">Nenhuma Referência</div>
+
+            <button class="btn btn-primary" onclick="analyzeDrawing()">Analisar Desenho</button>
+            
+            <div class="loader" id="critiqueLoader"></div>
+
+            <div class="critique-result" id="critiqueResult">
+                <h3>Análise do Desenho</h3>
+                <p id="critiqueText">Aqui aparecerá a análise amigável do seu desenho...</p>
+                <button class="btn btn-cyan" onclick="showPracticalTips()">Ver na Prática</button>
+                <div id="practicalTips" style="display: none; margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+                    <p style="font-size: 13px;"><strong>Ponto 1:</strong> A proporção da cabeça está um pouco grande em relação ao corpo.</p>
+                    <p style="font-size: 13px;"><strong>Ponto 2:</strong> A iluminação na sombra pode ser mais suave.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TELA 3: DESAFIOS DIÁRIOS ==================== -->
+        <div id="screen-challenges" class="screen">
+            <h2>Desafios Diários</h2>
+            <div id="challengeContent"></div>
+        </div>
+
+        <!-- ==================== TELA 4: MINI GAMES ==================== -->
+        <div id="screen-minigames" class="screen">
+            <h2>Mini Games</h2>
+            <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Sorteie um personagem e crie!</p>
+            
+            <div class="slots-container">
+                <div class="slot" id="slot1">Personagem: <span>Aguardando</span></div>
+                <div class="slot" id="slot2">Característica: <span>Aguardando</span></div>
+                <div class="slot" id="slot3">Habilidade: <span>Aguardando</span></div>
+            </div>
+
+            <button class="btn btn-primary" onclick="sortearPersonagem()">🎲 Sortear</button>
+            
+            <div id="minigameResult" style="display: none; margin-top: 20px;">
+                <label class="upload-area" for="minigameUpload">
+                    <div style="font-size: 30px;">🎨</div>
+                    <p>Desenhe o personagem sorteado e envie aqui!</p>
+                    <input type="file" id="minigameUpload" accept="image/*" capture="environment" onchange="handleMinigameUpload(event)">
+                </label>
+                <button class="btn btn-cyan" onclick="submitMinigame()">Enviar Desenho</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- MENU INFERIOR -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="changeScreen('sketchbook', this)">
+            <span class="icon">📚</span>
+            <span>Sketchbook</span>
+        </div>
+        <div class="nav-item" onclick="changeScreen('critique', this)">
+            <span class="icon">🔍</span>
+            <span>Críticas</span>
+        </div>
+        <div class="nav-item" onclick="changeScreen('challenges', this)">
+            <span class="icon">🏆</span>
+            <span>Desafios</span>
+        </div>
+        <div class="nav-item" onclick="changeScreen('minigames', this)">
+            <span class="icon">🎮</span>
+            <span>Mini Games</span>
+        </div>
+    </nav>
+</div>
+
+<!-- Aqui conectamos o JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
