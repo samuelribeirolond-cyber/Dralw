@@ -1,17 +1,16 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Drawl - Continue Praticando</title>
-    <!-- Aqui conectamos o CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="app-container">
     
-    <!-- HEADER COM LOGO E PONTOS -->
+    <!-- CABEÇALHO -->
     <header>
         <div class="logo-area">
             <div class="logo-icon">✕</div>
@@ -25,36 +24,33 @@
             <span class="score-value" id="totalScore">0</span>
         </div>
         
-        <!-- Detalhes dos Pontos (Escondido por padrão) -->
         <div class="score-details" id="scoreDetails">
-            <ul id="monthlyScores">
-                <li><span>Jan/2026</span> <span>+15 pts</span></li>
-                <li><span>Fev/2026</span> <span>-2 pts</span></li>
-            </ul>
+            <ul id="monthlyScores"></ul>
         </div>
     </header>
 
     <main>
-        <!-- ==================== TELA 1: SKETCHBOOK ==================== -->
+        <!-- TELA 1: SKETCHBOOK -->
         <div id="screen-sketchbook" class="screen active">
-            <h2>Sketchbook</h2>
+            <h2>Meu Sketchbook</h2>
             
             <label class="upload-area" for="sketchUpload">
-                <div style="font-size: 30px;">📸</div>
+                <div class="upload-icon">📸</div>
                 <p>Toque para importar ou tirar foto</p>
                 <input type="file" id="sketchUpload" accept="image/*" capture="environment" onchange="handleSketchUpload(event)">
             </label>
             
-            <div class="sketchbook-grid" id="sketchGrid">
-                <div style="grid-column: span 2; text-align: center; color: #888; font-size: 14px; padding: 20px;">
-                    Nenhum desenho salvo ainda.
+            <div class="sketchbook-album" id="sketchAlbum">
+                <div class="empty-state" id="emptyState">
+                    <p>Nenhum desenho salvo ainda.</p>
+                    <p style="font-size: 12px;">Envie sua primeira arte acima!</p>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== TELA 2: CRÍTICAS ==================== -->
+        <!-- TELA 2: CRÍTICAS -->
         <div id="screen-critique" class="screen">
-            <h2>Críticas</h2>
+            <h2>Críticas de Arte</h2>
             
             <div class="critique-container">
                 <div class="critique-box" id="refBox">
@@ -86,13 +82,13 @@
             </div>
         </div>
 
-        <!-- ==================== TELA 3: DESAFIOS DIÁRIOS ==================== -->
+        <!-- TELA 3: DESAFIOS DIÁRIOS -->
         <div id="screen-challenges" class="screen">
             <h2>Desafios Diários</h2>
             <div id="challengeContent"></div>
         </div>
 
-        <!-- ==================== TELA 4: MINI GAMES ==================== -->
+        <!-- TELA 4: MINI GAMES -->
         <div id="screen-minigames" class="screen">
             <h2>Mini Games</h2>
             <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Sorteie um personagem e crie!</p>
@@ -107,7 +103,7 @@
             
             <div id="minigameResult" style="display: none; margin-top: 20px;">
                 <label class="upload-area" for="minigameUpload">
-                    <div style="font-size: 30px;">🎨</div>
+                    <div class="upload-icon">🎨</div>
                     <p>Desenhe o personagem sorteado e envie aqui!</p>
                     <input type="file" id="minigameUpload" accept="image/*" capture="environment" onchange="handleMinigameUpload(event)">
                 </label>
@@ -137,7 +133,6 @@
     </nav>
 </div>
 
-<!-- Aqui conectamos o JavaScript -->
 <script src="script.js"></script>
 </body>
 </html>

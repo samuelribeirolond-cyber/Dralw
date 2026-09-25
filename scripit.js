@@ -1,4 +1,4 @@
-/* ==================== ESTADO DO APP (PRODUCT DESIGN) ==================== */
+/* ==================== ESTADO DO APP ==================== */
 const state = {
     totalScore: 0,
     desenhosNoSketchbook: 0,
@@ -7,11 +7,11 @@ const state = {
         "2/2026": 0
     },
     challengeAccepted: false,
-    challengeTimer: null,
     challengeDeadline: null,
     currentChallenge: null,
     noRefMode: false,
-    minigameSorteado: false
+    minigameSorteado: false,
+    minigameImage: null
 };
 
 // Listas para o Mini Game
@@ -19,24 +19,27 @@ const personagens = ["Um monstro de lava", "Um cavaleiro cibernético", "Uma fad
 const caracteristicas = ["Com olhos brilhantes", "Usando um chapéu enorme", "Com cicatrizes de batalha", "Muito elegante", "Segurando um guarda-chuva"];
 const habilidades = ["Controla o tempo", "Fala com animais", "Pode voar", "Cria ilusões", "Super força"];
 
-/* ==================== NAVEGAÇÃO (UX) ==================== */
+const desafios = [
+    { titulo: "Monstro de Lava", desc: "Crie um monstro feito de lava e rochas. Ele deve ter pelo menos 3 olhos e estar em um ambiente vulcânico." },
+    { titulo: "Cidade Flutuante", desc: "Desenhe uma cidade que flutua nas nuvens. Inclua detalhes de como as pessoas se locomovem." },
+    { titulo: "Guerreiro Samurai", desc: "Um samurai em posição de ataque. Preste atenção na armadura e na espada." },
+    { titulo: "Floresta Biônica", desc: "Uma floresta onde as árvores são feitas de metal e circuitos." }
+];
+
+/* ==================== NAVEGAÇÃO ==================== */
 function changeScreen(screenId, element) {
-    // Esconder todas as telas
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    // Mostrar a tela selecionada
     document.getElementById('screen-' + screenId).classList.add('active');
     
-    // Atualizar menu inferior
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
     element.classList.add('active');
 
-    // Ações específicas ao entrar na tela
     if (screenId === 'challenges') {
         renderChallenge();
     }
 }
 
-/* ==================== SISTEMA DE PONTOS E TABELA ==================== */
+/* ==================== SISTEMA DE PONTOS ==================== */
 function toggleScoreDetails() {
     const details = document.getElementById('scoreDetails');
     details.classList.toggle('active');
@@ -57,7 +60,6 @@ function updateScoreUI() {
 
 function addScore(pontos) {
     state.totalScore += pontos;
-    // Atualiza o mês atual (simplificado para 1/2026 como exemplo)
     state.historicoMensal["1/2026"] += pontos;
     updateScoreUI();
 }
@@ -71,39 +73,45 @@ function handleSketchUpload(event) {
     reader.onload = function(e) {
         const imgSrc = e.target.result;
         
-        // Adicionar ao grid
-        const grid = document.getElementById('sketchGrid');
-        if (grid.innerHTML.includes('Nenhum desenho')) {
-            grid.innerHTML = '';
-        }
+        const album = document.getElementById('sketchAlbum');
+        const emptyState = document.getElementById('emptyState');
+        if (emptyState) emptyState.style.display = 'none';
 
-        const div = document.createElement('div');
-        div.className = 'sketch-item';
-        div.innerHTML = `
+        const date = new Date().toLocaleDateString('pt-BR');
+        
+        const card = document.createElement('div');
+        card.className = 'sketch-card';
+        card.innerHTML = `
             <img src="${imgSrc}" alt="Desenho">
-            <div class="score-badge">Analisando...</div>
+            <div class="sketch-info">
+                <span class="sketch-date">${date}</span>
+                <span class="sketch-score" id="score-${Date.now()}">Analisando...</span>
+            </div>
         `;
-        grid.prepend(div);
+        album.prepend(card);
 
-        // Lógica de Pontuação (Product Design)
+        // Lógica de Pontuação
         state.desenhosNoSketchbook++;
         
         // Regra: Primeiros 10 desenhos dão nota. Depois, a cada 5.
         if (state.desenhosNoSketchbook <= 10 || state.desenhosNoSketchbook % 5 === 0) {
-            // Simula uma análise de IA (substitua por chamada real de API)
             setTimeout(() => {
                 const nota = Math.floor(Math.random() * 7) - 1; // -1 a 5
                 addScore(nota);
-                div.querySelector('.score-badge').textContent = `Nota: ${nota}`;
-                div.querySelector('.score-badge').style.color = nota >= 0 ? '#00e5ff' : '#ff5252';
-                alert(`Desenho analisado! Nota: ${nota}`);
-            }, 1500);
+                const scoreBadge = card.querySelector('.sketch-score');
+                scoreBadge.textContent = `Nota: ${nota}`;
+                scoreBadge.style.color = nota >= 0 ? '#00e5ff' : '#ff5252';
+            }, 2000);
         } else {
-            div.querySelector('.score-badge').textContent = 'Salvo';
+            setTimeout(() => {
+                const scoreBadge = card.querySelector('.sketch-score');
+                scoreBadge.textContent = 'Salvo';
+                scoreBadge.style.color = '#aaa';
+            }, 1000);
         }
     };
     reader.readAsDataURL(file);
-    event.target.value = ''; // Limpar input
+    event.target.value = '';
 }
 
 /* ==================== TELA 2: CRÍTICAS ==================== */
@@ -164,7 +172,6 @@ function analyzeDrawing() {
     loader.style.display = 'block';
     result.style.display = 'none';
 
-    // Simulação de chamada de API de IA
     setTimeout(() => {
         loader.style.display = 'none';
         result.style.display = 'block';
@@ -180,7 +187,7 @@ function analyzeDrawing() {
             <strong>O que estudar:</strong> Recomendo estudar <em>Luz e Sombra</em> e <em>Anatomia Humana - Membros Superiores</em>.
         `;
         document.getElementById('practicalTips').style.display = 'none';
-    }, 2000);
+    }, 2500);
 }
 
 function showPracticalTips() {
@@ -188,26 +195,17 @@ function showPracticalTips() {
     tips.style.display = tips.style.display === 'none' ? 'block' : 'none';
 }
 
-/* ==================== TELA 3: DESAFIOS DIÁRIOS ==================== */
-const desafios = [
-    { titulo: "Monstro de Lava", desc: "Crie um monstro feito de lava e rochas. Ele deve ter pelo menos 3 olhos e estar em um ambiente vulcânico." },
-    { titulo: "Cidade Flutuante", desc: "Desenhe uma cidade que flutua nas nuvens. Inclua detalhes de como as pessoas se locomovem." },
-    { titulo: "Guerreiro Samurai", desc: "Um samurai em posição de ataque. Preste atenção na armadura e na espada." },
-    { titulo: "Floresta Biônica", desc: "Uma floresta onde as árvores são feitas de metal e circuitos." }
-];
-
+/* ==================== TELA 3: DESAFIOS ==================== */
 function renderChallenge() {
     const container = document.getElementById('challengeContent');
     
     if (state.challengeAccepted && state.challengeDeadline) {
-        // Se o desafio foi aceito, mostra o timer e upload
         const now = new Date().getTime();
         const distance = state.challengeDeadline - now;
         
         if (distance < 0) {
-            // Tempo esgotado
             state.challengeAccepted = false;
-            addScore(-7); // Penalidade por não entregar
+            addScore(-7);
             alert("Tempo esgotado! Você perdeu -7 pontos.");
             renderChallenge();
             return;
@@ -225,17 +223,15 @@ function renderChallenge() {
                 <p style="font-size: 12px;">Tempo restante para entregar</p>
             </div>
             <label class="upload-area" for="challengeUpload">
-                <div style="font-size: 30px;">📤</div>
+                <div class="upload-icon">📤</div>
                 <p>Entregar Desenho</p>
                 <input type="file" id="challengeUpload" accept="image/*" capture="environment" onchange="submitChallenge(event)">
             </label>
         `;
         
-        // Atualiza o timer a cada segundo
         setTimeout(renderChallenge, 1000);
 
     } else {
-        // Sorteia um novo desafio
         const randomIndex = Math.floor(Math.random() * desafios.length);
         state.currentChallenge = desafios[randomIndex];
 
@@ -255,13 +251,11 @@ function renderChallenge() {
 
 function acceptChallenge() {
     state.challengeAccepted = true;
-    // Define o prazo para 24 horas a partir de agora
     state.challengeDeadline = new Date().getTime() + (24 * 60 * 60 * 1000);
     renderChallenge();
 }
 
 function recuseChallenge() {
-    // Apenas re-renderiza para sortear outro
     renderChallenge();
 }
 
@@ -271,4 +265,57 @@ function submitChallenge(event) {
 
     const reader = new FileReader();
     reader.onload = function(e) {
-        // Simula análise
+        alert("Desenho entregue! Analisando...");
+        
+        setTimeout(() => {
+            const nota = Math.floor(Math.random() * 16) - 5; // -5 a 10
+            addScore(nota);
+            state.challengeAccepted = false;
+            state.challengeDeadline = null;
+            
+            alert(`Análise concluída! Nota do desafio: ${nota}`);
+            renderChallenge();
+        }, 2000);
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+/* ==================== TELA 4: MINI GAMES ==================== */
+function sortearPersonagem() {
+    const p = personagens[Math.floor(Math.random() * personagens.length)];
+    const c = caracteristicas[Math.floor(Math.random() * caracteristicas.length)];
+    const h = habilidades[Math.floor(Math.random() * habilidades.length)];
+
+    document.querySelector('#slot1 span').textContent = p;
+    document.querySelector('#slot2 span').textContent = c;
+    document.querySelector('#slot3 span').textContent = h;
+
+    state.minigameSorteado = true;
+    document.getElementById('minigameResult').style.display = 'block';
+}
+
+function handleMinigameUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        state.minigameImage = e.target.result;
+        alert("Imagem carregada! Clique em Enviar Desenho.");
+    };
+    reader.readAsDataURL(file);
+}
+
+function submitMinigame() {
+    if (!state.minigameSorteado) {
+        alert("Sorteie um personagem primeiro!");
+        return;
+    }
+    if (!state.minigameImage) {
+        alert("Por favor, envie o desenho do personagem sorteado.");
+        return;
+    }
+    
+    alert("Desenho do Mini Game enviado! Análise em andamento...");
+    setTimeout(() => {
+        const nota
