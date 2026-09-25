@@ -14,7 +14,6 @@ const state = {
     minigameImage: null
 };
 
-// Listas para o Mini Game
 const personagens = ["Um monstro de lava", "Um cavaleiro cibernético", "Uma fada das sombras", "Um robô enferrujado", "Uma sereia do deserto"];
 const caracteristicas = ["Com olhos brilhantes", "Usando um chapéu enorme", "Com cicatrizes de batalha", "Muito elegante", "Segurando um guarda-chuva"];
 const habilidades = ["Controla o tempo", "Fala com animais", "Pode voar", "Cria ilusões", "Super força"];
@@ -26,30 +25,31 @@ const desafios = [
     { titulo: "Floresta Biônica", desc: "Uma floresta onde as árvores são feitas de metal e circuitos." }
 ];
 
-/* ==================== NAVEGAÇÃO ==================== */
-function changeScreen(screenId, element) {
+/* ==================== NAVEGAÇÃO POR ABAS ==================== */
+function changeTab(tabId, element) {
+    // Esconder todas as telas
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + screenId).classList.add('active');
+    // Mostrar a tela selecionada
+    document.getElementById('screen-' + tabId).classList.add('active');
     
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    // Atualizar abas
+    document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
     element.classList.add('active');
 
-    if (screenId === 'challenges') {
+    // Ações específicas ao entrar em cada aba
+    if (tabId === 'pontos') {
+        updateScoreUI();
+    }
+    if (tabId === 'challenges') {
         renderChallenge();
     }
 }
 
 /* ==================== SISTEMA DE PONTOS ==================== */
-function toggleScoreDetails() {
-    const details = document.getElementById('scoreDetails');
-    details.classList.toggle('active');
-    updateScoreUI();
-}
-
 function updateScoreUI() {
-    document.getElementById('totalScore').textContent = state.totalScore;
+    document.getElementById('totalScoreDisplay').textContent = state.totalScore;
     
-    const monthlyList = document.getElementById('monthlyScores');
+    const monthlyList = document.getElementById('monthlyScoresList');
     monthlyList.innerHTML = '';
     for (const [mes, pontos] of Object.entries(state.historicoMensal)) {
         const li = document.createElement('li');
@@ -60,11 +60,12 @@ function updateScoreUI() {
 
 function addScore(pontos) {
     state.totalScore += pontos;
+    // Atualiza o mês atual (simplificado para 1/2026 como exemplo)
     state.historicoMensal["1/2026"] += pontos;
     updateScoreUI();
 }
 
-/* ==================== TELA 1: SKETCHBOOK ==================== */
+/* ==================== ABA SKETCHBOOK ==================== */
 function handleSketchUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -90,7 +91,7 @@ function handleSketchUpload(event) {
         `;
         album.prepend(card);
 
-        // Lógica de Pontuação
+        // Lógica de Pontuação (Regra do usuário)
         state.desenhosNoSketchbook++;
         
         // Regra: Primeiros 10 desenhos dão nota. Depois, a cada 5.
@@ -114,7 +115,7 @@ function handleSketchUpload(event) {
     event.target.value = '';
 }
 
-/* ==================== TELA 2: CRÍTICAS ==================== */
+/* ==================== ABA CRÍTICAS ==================== */
 function handleRefUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -195,7 +196,7 @@ function showPracticalTips() {
     tips.style.display = tips.style.display === 'none' ? 'block' : 'none';
 }
 
-/* ==================== TELA 3: DESAFIOS ==================== */
+/* ==================== ABA DESAFIOS ==================== */
 function renderChallenge() {
     const container = document.getElementById('challengeContent');
     
@@ -268,54 +269,4 @@ function submitChallenge(event) {
         alert("Desenho entregue! Analisando...");
         
         setTimeout(() => {
-            const nota = Math.floor(Math.random() * 16) - 5; // -5 a 10
-            addScore(nota);
-            state.challengeAccepted = false;
-            state.challengeDeadline = null;
-            
-            alert(`Análise concluída! Nota do desafio: ${nota}`);
-            renderChallenge();
-        }, 2000);
-    };
-    reader.readAsDataURL(file);
-    event.target.value = '';
-}
-
-/* ==================== TELA 4: MINI GAMES ==================== */
-function sortearPersonagem() {
-    const p = personagens[Math.floor(Math.random() * personagens.length)];
-    const c = caracteristicas[Math.floor(Math.random() * caracteristicas.length)];
-    const h = habilidades[Math.floor(Math.random() * habilidades.length)];
-
-    document.querySelector('#slot1 span').textContent = p;
-    document.querySelector('#slot2 span').textContent = c;
-    document.querySelector('#slot3 span').textContent = h;
-
-    state.minigameSorteado = true;
-    document.getElementById('minigameResult').style.display = 'block';
-}
-
-function handleMinigameUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        state.minigameImage = e.target.result;
-        alert("Imagem carregada! Clique em Enviar Desenho.");
-    };
-    reader.readAsDataURL(file);
-}
-
-function submitMinigame() {
-    if (!state.minigameSorteado) {
-        alert("Sorteie um personagem primeiro!");
-        return;
-    }
-    if (!state.minigameImage) {
-        alert("Por favor, envie o desenho do personagem sorteado.");
-        return;
-    }
-    
-    alert("Desenho do Mini Game enviado! Análise em andamento...");
-    setTimeout(() => {
-        const nota
+            const nota = Math.floor(Math.random() * 16) - 5; //

@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -10,33 +10,66 @@
 
 <div id="app-container">
     
-    <!-- CABEÇALHO -->
+    <!-- CABEÇALHO COM LOGO -->
     <header>
         <div class="logo-area">
             <div class="logo-icon">✕</div>
             <div class="logo-text">DRAWL</div>
         </div>
         <div class="logo-sub">CONTINUE PRATICANDO</div>
-        
-        <!-- Tabela de Pontos -->
-        <div class="score-table" id="scoreTable" onclick="toggleScoreDetails()">
-            <span class="score-title">Pontos Totais</span>
-            <span class="score-value" id="totalScore">0</span>
-        </div>
-        
-        <div class="score-details" id="scoreDetails">
-            <ul id="monthlyScores"></ul>
-        </div>
     </header>
 
+    <!-- SISTEMA DE ABAS (Substitui a tabela antiga) -->
+    <nav class="tab-nav">
+        <div class="tab-item active" onclick="changeTab('pontos', this)">
+            <span class="tab-icon">📊</span>
+            <span class="tab-label">Pontos</span>
+        </div>
+        <div class="tab-item" onclick="changeTab('sketchbook', this)">
+            <span class="tab-icon">📚</span>
+            <span class="tab-label">Sketch</span>
+        </div>
+        <div class="tab-item" onclick="changeTab('critique', this)">
+            <span class="tab-icon">🔍</span>
+            <span class="tab-label">Críticas</span>
+        </div>
+        <div class="tab-item" onclick="changeTab('challenges', this)">
+            <span class="tab-icon">🏆</span>
+            <span class="tab-label">Desafios</span>
+        </div>
+        <div class="tab-item" onclick="changeTab('minigames', this)">
+            <span class="tab-icon">🎮</span>
+            <span class="tab-label">Games</span>
+        </div>
+    </nav>
+
     <main>
-        <!-- TELA 1: SKETCHBOOK -->
-        <div id="screen-sketchbook" class="screen active">
+        <!-- ABA 1: PONTOS -->
+        <div id="screen-pontos" class="screen active">
+            <h2>Meus Pontos</h2>
+            <div class="score-total-card">
+                <span>Pontuação Total</span>
+                <span class="total-value" id="totalScoreDisplay">0</span>
+            </div>
+            <h3 class="section-subtitle">Histórico Mensal</h3>
+            <ul class="monthly-list" id="monthlyScoresList">
+                <!-- Preenchido via JS -->
+            </ul>
+            <div class="info-box">
+                <p>💡 <strong>Como funciona:</strong></p>
+                <p>• Sketchbook: -1 a 5 pontos (primeiros 10 desenhos, depois a cada 5)</p>
+                <p>• Desafios: -5 a 10 pontos por desafio concluído</p>
+                <p>• Dia sem desenhar: -7 pontos</p>
+            </div>
+        </div>
+
+        <!-- ABA 2: SKETCHBOOK -->
+        <div id="screen-sketchbook" class="screen">
             <h2>Meu Sketchbook</h2>
             
             <label class="upload-area" for="sketchUpload">
                 <div class="upload-icon">📸</div>
-                <p>Toque para importar ou tirar foto</p>
+                <p>Importar ou Tirar Foto</p>
                 <input type="file" id="sketchUpload" accept="image/*" capture="environment" onchange="handleSketchUpload(event)">
             </label>
             
@@ -48,7 +81,7 @@
             </div>
         </div>
 
-        <!-- TELA 2: CRÍTICAS -->
+        <!-- ABA 3: CRÍTICAS -->
         <div id="screen-critique" class="screen">
             <h2>Críticas de Arte</h2>
             
@@ -82,13 +115,13 @@
             </div>
         </div>
 
-        <!-- TELA 3: DESAFIOS DIÁRIOS -->
+        <!-- ABA 4: DESAFIOS -->
         <div id="screen-challenges" class="screen">
             <h2>Desafios Diários</h2>
             <div id="challengeContent"></div>
         </div>
 
-        <!-- TELA 4: MINI GAMES -->
+        <!-- ABA 5: MINI GAMES -->
         <div id="screen-minigames" class="screen">
             <h2>Mini Games</h2>
             <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Sorteie um personagem e crie!</p>
@@ -111,26 +144,6 @@
             </div>
         </div>
     </main>
-
-    <!-- MENU INFERIOR -->
-    <nav class="bottom-nav">
-        <div class="nav-item active" onclick="changeScreen('sketchbook', this)">
-            <span class="icon">📚</span>
-            <span>Sketchbook</span>
-        </div>
-        <div class="nav-item" onclick="changeScreen('critique', this)">
-            <span class="icon">🔍</span>
-            <span>Críticas</span>
-        </div>
-        <div class="nav-item" onclick="changeScreen('challenges', this)">
-            <span class="icon">🏆</span>
-            <span>Desafios</span>
-        </div>
-        <div class="nav-item" onclick="changeScreen('minigames', this)">
-            <span class="icon">🎮</span>
-            <span>Mini Games</span>
-        </div>
-    </nav>
 </div>
 
 <script src="script.js"></script>
